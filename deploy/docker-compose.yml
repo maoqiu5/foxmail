@@ -1,0 +1,49 @@
+name: nas-mail-archive
+
+services:
+  tailscale:
+    image: tailscale/tailscale:stable
+    container_name: nas-mail-tailscale
+    hostname: nas-mail
+    restart: unless-stopped
+    command:
+      - tailscaled
+      - --state=/var/lib/tailscale/tailscaled.state
+      - --socket=/tmp/tailscaled.sock
+    environment:
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_USERSPACE: "false"
+    volumes:
+      - /data_n006/apps/mail-archive/tailscale:/var/lib/tailscale
+      - /data_n006/apps/mail-archive/tls:/tls
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+
+  dovecot:
+    build:
+      context: ./dovecot
+    container_name: nas-mail-dovecot
+    restart: unless-stopped
+    depends_on:
+      - tailscale
+    network_mode: "service:tailscale"
+    volumes:
+      - /data_n006/mail-archive/mail:/srv/mail
+      - /data_n006/apps/mail-archive/tls:/etc/dovecot/tls:ro
+      - /data_n006/apps/mail-archive/secrets/archive_password:/run/secrets/archive_password:ro
+      - /data_n006/apps/mail-archive/secrets/wps_password:/run/secrets/wps_password:ro
+
+  mail-sync:
+    build:
+      context: ./sync
+    container_name: nas-mail-sync
+    restart: unless-stopped
+    depends_on:
+      - dovecot
+    network_mode: "service:tailscale"
+    volumes:
+      - /data_n006/apps/mail-archive/secrets/wps_password:/run/secrets/wps_password:ro
+      - /data_n006/apps/mail-archive/secrets/archive_password:/run/secrets/archive_password:ro
+      - /data_n006/apps/mail-archive/logs:/var/log/mail-sync
