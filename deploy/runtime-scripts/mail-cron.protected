@@ -1,0 +1,12 @@
+*/1 * * * * /bin/bash /zspace/shell/watcher.sh
+*/1 * * * * sh /usr/local/zds/monitor.sh
+*/1 * * * * /bin/bash /zspace/applications/services/zrps/monitor.sh
+*/1 * * * * /bin/bash /zspace/applications/services/upgrader/monitor.sh
+*/1 * * * * sh /zspace/shell/openresty.sh
+#0 3 * * 6 sh /zspace/shell/sys/btrfs_check.sh >> /zspace/applications/logs/btrfs_check.log
+*/10 * * * * sh /zspace/shell/check_upgrader.sh
+#*/30 * * * * /bin/bash /zspace/applications/services/portainer/shell/docker_report.sh
+*/5 * * * * /bin/bash /zspace/shell/tool/clean_log.sh
+*/3 * * * * /data_n006/apps/mail-archive/latest-minute-sync.sh
+1,4,7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,52,55,58 * * * * /data_n006/apps/mail-archive/sent-sync.sh
+* * * * * /data_n006/apps/mail-archive/mail-health-watchdog.sh
