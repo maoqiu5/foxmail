@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Runtime / generated
+data/
+logs/
+runtime/
+backups/
+secrets/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Databases
+*.db
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store

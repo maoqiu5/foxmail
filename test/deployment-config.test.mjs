@@ -84,8 +84,10 @@ test("deployment refuses to start sync without secrets", () => {
 test("verification checks private access and avoids public mail listeners", () => {
   const verify = read("deploy/scripts/verify.ps1");
 
-  assert.match(verify, /tailscale status/);
+  assert.match(verify, /tailscale .*status/);
+  assert.match(verify, /--socket=\/tmp\/tailscaled\.sock/);
   assert.match(verify, /Test-NetConnection/);
+  assert.match(verify, /TailnetIp/);
   assert.match(verify, /openssl s_client/);
   assert.match(verify, /ss -ltnp/);
   assert.match(verify, /25\|465\|587/);
